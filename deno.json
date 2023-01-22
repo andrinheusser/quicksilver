@@ -1,0 +1,7 @@
+{
+  "importMap": "import_map.json",
+  "tasks": {
+    "codegen": "cd codegen && deno run --allow-write index.ts"
+  }
+}
+

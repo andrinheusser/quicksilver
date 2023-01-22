@@ -1,0 +1,11 @@
+console.log("generating constants...");
+import "@quicksilver/codegen/generate_constants.ts";
+console.log("generating types...");
+import "@quicksilver/codegen/generate_types.ts";
+console.log("generating decode method...");
+import "@quicksilver/codegen/generate_decode.ts";
+console.log("generating encode methods...");
+import "@quicksilver/codegen/generate_encode.ts";
+console.log("generating decode method publisher...");
+import "@quicksilver/codegen/generate_decoded_method_publisher.ts";
+console.log("done");
