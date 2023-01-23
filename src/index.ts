@@ -65,7 +65,7 @@ setInterval(() => {
     },
     { appId: "quicksilver" },
   );
-}, 20);
+}, 10);
 
 channel1.consume(
   {

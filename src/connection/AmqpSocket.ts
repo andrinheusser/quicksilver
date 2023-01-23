@@ -20,7 +20,6 @@ const INCOMING_CONTENT: Array<AmqpMethodKind> = [
 class AmqpSocket {
   private conn: TcpConnection;
   private isClosed = true;
-  private writeQueue = new Array<Uint8Array>();
 
   private awaitingContentMethods = new Map<number, AwaitingContentMethod>();
 
@@ -32,7 +31,6 @@ class AmqpSocket {
     await this.conn.connect(host, port);
     this.isClosed = false;
     this.readFrames();
-    this.write();
     this.writeFrame(Frame.bulidProtocolHeader());
   }
 
@@ -42,24 +40,14 @@ class AmqpSocket {
   }
 
   writeFrame(data: Uint8Array) {
-    this.writeQueue.push(data);
+    this.write(data);
   }
   writeFrames(arr: Uint8Array[]) {
-    arr.forEach((data) => this.writeQueue.push(data));
+    arr.forEach((data) => this.write(data));
   }
 
-  private async write() {
-    while (true) {
-      if (this.writeQueue.length > 0) {
-        const frame = this.writeQueue.shift();
-        if (frame) {
-          await this.conn.write(frame);
-        }
-      }
-      if (this.writeQueue.length === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
-    }
+  private async write(data: Uint8Array) {
+    await this.conn.write(data);
   }
 
   private readFrames() {
