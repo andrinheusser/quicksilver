@@ -17,11 +17,15 @@ I suggest [lenkan/deno-amqp](https://github.com/lenkan/deno-amqp).
 - [x] Sending Messages
 - [x] Consuming Messages
 - [ ] Error Handling / Connection & Channel Exceptions / Gracefully close connections
-- [ ] mod.ts with relevant exports
+- [x] mod.ts with relevant exports
 - [ ] Extend Encoding/Decoding tests
+- [ ] Basic get / return
 
 ## Codegen
 
 Run `deno task codegen`
 
+## Tests
+
+Module tests require a rabbitmq instance running on localhost.
 

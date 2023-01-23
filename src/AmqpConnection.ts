@@ -40,7 +40,7 @@ const _tune = (them: number, us?: number) => {
 
 export default class AmqpConnection {
   private options: AmqpConnectionOptions = amqpConnectionOptionsDefaults;
-  private isConnected = false;
+  public isConnected = false;
   private socket: typeof amqpSocket;
   private channels: { id: number; channel: AmqpChannel }[] = [];
   private channelMax = 0;
