@@ -28,13 +28,16 @@ export default class Frame {
   }
   public static readFrame(
     data: Uint8Array,
-  ): IncomingFrame & { remaining: Uint8Array } {
+  ): (IncomingFrame | { type: "none" }) & { remaining: Uint8Array } {
     const type = data[0];
     const channel = (data[1] << 8) | data[2];
     const size = (data[3] << 24) | (data[4] << 16) | (data[5] << 8) | data[6];
     const payload = data.slice(7, 7 + size);
     const end = data[7 + size];
 
+    if (data.length < (size + 8) || data.length < 8) {
+      return { type: "none", remaining: data };
+    }
     if (end !== 0xce) {
       throw new Error("Frame end byte is not 0xCE");
     }
@@ -59,8 +62,8 @@ export default class Frame {
       case 8:
         return { type: "heartbeat", channel, remaining };
       default:
-        throw new Error("Unknown frame type");
     }
+    throw new Error("Invalid Frame");
   }
 
   private static readHeaderFrame(

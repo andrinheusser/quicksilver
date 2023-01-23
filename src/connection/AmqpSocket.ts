@@ -20,6 +20,7 @@ const INCOMING_CONTENT: Array<AmqpMethodKind> = [
 class AmqpSocket {
   private conn: TcpConnection;
   private isClosed = true;
+  private previous = new Uint8Array();
 
   private awaitingContentMethods = new Map<number, AwaitingContentMethod>();
 
@@ -55,10 +56,21 @@ class AmqpSocket {
   }
 
   private onRead(data: Uint8Array) {
-    const { remaining, ...frame } = Frame.readFrame(data);
-    this.handleFrame(frame);
-    if (remaining.length > 0) {
-      this.onRead(remaining);
+    const { remaining, ...frame } = Frame.readFrame(
+      new Uint8Array([
+        ...this.previous,
+        ...data,
+      ]),
+    );
+    if (frame.type === "none") {
+      this.previous = remaining;
+      return Promise.resolve();
+    } else {
+      this.previous = new Uint8Array();
+      this.handleFrame(frame);
+      if (remaining.length > 0) {
+        this.onRead(remaining);
+      }
     }
     return Promise.resolve();
   }
